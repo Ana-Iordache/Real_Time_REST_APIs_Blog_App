@@ -1,13 +1,21 @@
 package com.blog.blogrestapi;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
+// declares one or more @Bean methods so we can declare beans inside it
 public class BlogRestApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(BlogRestApiApplication.class, args);
-	}
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(BlogRestApiApplication.class, args);
+    }
 
 }

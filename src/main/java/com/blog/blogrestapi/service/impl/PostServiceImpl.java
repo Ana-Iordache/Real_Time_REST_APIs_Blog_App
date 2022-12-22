@@ -6,6 +6,8 @@ import com.blog.blogrestapi.payload.PostDto;
 import com.blog.blogrestapi.payload.PostResponse;
 import com.blog.blogrestapi.repository.PostRepository;
 import com.blog.blogrestapi.service.PostService;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
-    private PostRepository postRepository;
-
-    public PostServiceImpl(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    private final PostRepository postRepository;
+    private final ModelMapper mapper;
 
     @Override
     public PostDto createPost(PostDto postDto) {
@@ -89,25 +89,12 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
-    // convert entity to dto
     private PostDto mapToDto(Post post) {
-        PostDto postDto = new PostDto();
-        postDto.setDescription(post.getDescription());
-        postDto.setContent(post.getContent());
-        postDto.setTitle(post.getTitle());
-        postDto.setId(post.getId());
-
-        return postDto;
+        return mapper.map(post, PostDto.class);
     }
 
-    // convert dto to entity
     private Post mapToEntity(PostDto postDto) {
-        Post post = new Post();
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
-
-        return post;
+        return mapper.map(postDto, Post.class);
     }
 }
 // if a class is configured as a spring bean and it has only one constructor

@@ -2,7 +2,6 @@ package com.blog.blogrestapi.controller;
 
 import com.blog.blogrestapi.payload.CommentDto;
 import com.blog.blogrestapi.service.CommentService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,9 @@
 package com.blog.blogrestapi.payload;
 
+import com.blog.blogrestapi.entity.Comment;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class PostDto {
@@ -8,6 +11,7 @@ public class PostDto {
     private String title;
     private String description;
     private String content;
+    private Set<CommentDto> comments;
 }
 
 // DTO -  data transfer object -> a design pattern used to pass the data with
