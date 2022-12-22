@@ -1,15 +1,20 @@
 package com.blog.blogrestapi.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -30,4 +35,11 @@ public class Post {
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    // --> mappedBy - to maintain the owning relationship between comment and post
+    // (this is the correspondent of post field from Comment class)
+    // --> cascade - all the operations (update, delete etc) will be applied to the child
+    // --> orphanRemoval - when the parent is removed, the child will be removed too
+    private Set<Comment> comments = new HashSet<>(); // we use set because it doesn't allow duplicates
 }
