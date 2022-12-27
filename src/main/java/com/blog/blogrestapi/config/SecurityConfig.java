@@ -1,9 +1,13 @@
 package com.blog.blogrestapi.config;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -18,10 +22,25 @@ import org.springframework.security.web.SecurityFilterChain;
 // with this annotation, this class becomes a java based configuration
 // and within this we can define all the spring bean definitions
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    // instead of injecting the class object directly,
+    // we use the interface to achieve the loose coupling
+    private final UserDetailsService userDetailsService;
+
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // this AuthenticationManager will use userDetailsService to get the user from de DB and also
+    // uses PasswordEncoder to encode the password
+    // spring security provides automatically UserDetailsService and PasswordEncoder to AuthenticationManager
+    // so we don't need to explicitly specify it
+    // SO --> this method will do the DB authentication
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
     @Bean
@@ -33,28 +52,6 @@ public class SecurityConfig {
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
-    }
-
-    // we can create the users like this or
-    // in file application.properties:
-    // spring.security.user.name=ana
-    // spring.security.user.password=ana
-    // spring.security.user.roles=ADMIN
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails ana = User.builder()
-                .username("ana")
-                .password(passwordEncoder().encode("ana"))
-                .roles("USER")
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(ana, admin);
     }
 }
 // this class will just create a basic pop-up authentication
