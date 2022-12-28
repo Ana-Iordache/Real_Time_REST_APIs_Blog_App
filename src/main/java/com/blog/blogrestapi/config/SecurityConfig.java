@@ -48,9 +48,9 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests((auth) ->
                         auth.requestMatchers(HttpMethod.GET, "/api/**").permitAll() // we give permission to access the GET endpoint to all the users
+                                .requestMatchers("/api/auth/**").permitAll() // all the users can access the login url
                                 .anyRequest().authenticated()
-                )
-                .httpBasic(Customizer.withDefaults());
+                );
         return http.build();
     }
 }
