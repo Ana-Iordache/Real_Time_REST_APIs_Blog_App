@@ -1,7 +1,6 @@
 package com.blog.blogrestapi.controller;
 
 import com.blog.blogrestapi.payload.PostDto;
-import com.blog.blogrestapi.payload.PostDtoV2;
 import com.blog.blogrestapi.payload.PostResponse;
 import com.blog.blogrestapi.service.PostService;
 import jakarta.validation.Valid;
@@ -18,13 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.blog.blogrestapi.utils.AppConstants.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/v1")
 public class PostController {
     private PostService postService;
 
@@ -33,12 +29,12 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('ADMIN')") // only admin user can access this endpoint
-    @PostMapping("/api/posts")
+    @PostMapping("/posts")
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto) {
         return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/posts")
+    @GetMapping("/posts")
     public ResponseEntity<PostResponse> getAllPosts(@RequestParam(value = "pageNo", defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                                     @RequestParam(value = "pageSize", defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize,
                                                     @RequestParam(value = "sortBy", defaultValue = DEFAULT_SORT_BY, required = false) String sortBy,
@@ -46,41 +42,22 @@ public class PostController {
         return new ResponseEntity<>(postService.getAllPosts(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.blogapp.v1+json") //multimedia type
+    @GetMapping(value = "/posts/{id}")
     public ResponseEntity<PostDto> getPostByIdV1(@PathVariable long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
-    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.blogapp.v2+json")
-    public ResponseEntity<PostDtoV2> getPostByIdV2(@PathVariable long id) {
-        PostDto postDto = postService.getPostById(id);
-        PostDtoV2 postDtoV2 = new PostDtoV2();
-        postDtoV2.setTitle(postDto.getTitle());
-        postDtoV2.setDescription(postDto.getDescription());
-        postDtoV2.setContent(postDto.getContent());
-        postDtoV2.setComments(postDto.getComments());
-
-        List<String> tags = new ArrayList<>();
-        tags.add("Java");
-        tags.add("Spring Boot");
-        tags.add("AWS");
-
-        postDtoV2.setTags(tags);
-
-        return ResponseEntity.ok(postDtoV2);
-    }
-
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/api/posts/{id}")
+    @PutMapping("/posts/{id}")
     public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable long id) {
         return new ResponseEntity<>(postService.updatePost(postDto, id), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/api/posts/{id}")
+    @DeleteMapping("/posts/{id}")
     public ResponseEntity<String> deletePost(@PathVariable long id) {
         postService.deletePost(id);
-        return ResponseEntity.ok("Post deleted succssesfully!");
+        return ResponseEntity.ok("Post deleted successfully!");
     }
     // @RequestBody -> convert a JSON into a Java object
 }

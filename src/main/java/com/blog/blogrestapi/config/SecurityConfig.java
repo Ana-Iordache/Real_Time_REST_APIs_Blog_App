@@ -51,8 +51,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((auth) ->
-                        auth.requestMatchers(HttpMethod.GET, "/api/**").permitAll() // we give permission to access the GET endpoint to all the users
-                                .requestMatchers("/api/auth/**").permitAll() // all the users can access the login url
+                        auth.requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll() // we give permission to access the GET endpoint to all the users
+                                .requestMatchers("/api/v1/auth/**").permitAll() // all the users can access the login url
                                 .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
