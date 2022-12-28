@@ -46,12 +46,12 @@ public class PostController {
         return new ResponseEntity<>(postService.getAllPosts(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/api/posts/{id}", headers = "X-API-VERSION=1")
+    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.blogapp.v1+json") //multimedia type
     public ResponseEntity<PostDto> getPostByIdV1(@PathVariable long id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
-    @GetMapping(value = "/api/posts/{id}", headers = "X-API-VERSION=2")
+    @GetMapping(value = "/api/posts/{id}", produces = "application/vnd.blogapp.v2+json")
     public ResponseEntity<PostDtoV2> getPostByIdV2(@PathVariable long id) {
         PostDto postDto = postService.getPostById(id);
         PostDtoV2 postDtoV2 = new PostDtoV2();
